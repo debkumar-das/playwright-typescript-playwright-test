@@ -4,7 +4,7 @@
   "description": "Playwright Framework with Typescript",
   "main": "index.js",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "test": "cross-env ENV=%ENV% npx playwright test",
@@ -13,7 +13,7 @@
     "test:serial": "cross-env ENV=%ENV% npx playwright test --grep @Smoke --workers=1 --project=Chrome",
     "test:serial:ci": "npx playwright test --grep @Smoke --workers=1 --project=Chrome",
     "test:ui": "cross-env ENV=%ENV% npx playwright test --grep @Smoke --ui",
-    "test:api": "cross-env ENV=%ENV% npx playwright test --grep @API --workers=1 --project=Chrome",
+    "test:api": "cross-env ENV=%ENV% npx playwright test --grep @API --workers=1 --project=API",
     "test:db": "cross-env ENV=%ENV% npx playwright test DB.test.ts --project=DB",
     "test:record": "npx playwright codegen",
     "test:visual": "cross-env ENV=%ENV% npx playwright test visualComparision.test.ts --project=Chrome",
@@ -29,22 +29,22 @@
   "author": "Akshay Pai",
   "license": "MIT",
   "dependencies": {
-    "@axe-core/playwright": "^4.11.1",
+    "@axe-core/playwright": "^4.11.3",
     "cross-env": "^10.1.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.60.0",
     "@types/crypto-js": "^4.2.2",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "allure-playwright": "^3.4.5",
+    "@typescript-eslint/eslint-plugin": "^8.59.3",
+    "@typescript-eslint/parser": "^8.59.3",
+    "allure-playwright": "^3.8.0",
     "crypto-js": "^4.2.0",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "exceljs": "^4.4.0",
     "lighthouse": "^9.6.8",
-    "ortoni-report": "^4.0.5",
+    "ortoni-report": "^4.0.8",
     "pdfjs-dist-es5": "^2.13.216",
-    "pg": "^8.18.0",
-    "typescript": "^5.9.3",
+    "pg": "^8.21.0",
+    "typescript": "^6.0.3",
     "winston": "^3.19.0"
   }
 }

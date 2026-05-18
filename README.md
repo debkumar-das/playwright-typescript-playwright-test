@@ -197,21 +197,21 @@ $env:ENV="qa"; npm run test:serial
 ENV=qa npm run test:serial
 ```
 
-6. For executing API test cases, please provide "ENV" value as "qaApi" or "devApi" :
+6. For executing API test cases, please provide "ENV" value as "qaApi" or "devApi". ReqRes API tests also require `REQRES_API_KEY`, because ReqRes expects the `x-api-key` request header:
 
 **Windows CMD:**
 ```batch
-set ENV=qaApi && npm run test:api
+set "ENV=qaApi" && set "REQRES_API_KEY=your_reqres_key" && npm run test:api
 ```
 
 **Windows PowerShell:**
 ```powershell
-$env:ENV="qaApi"; npm run test:api
+$env:ENV="qaApi"; $env:REQRES_API_KEY="your_reqres_key"; npm run test:api
 ```
 
 **Mac/Linux/WSL:**
 ```bash
-ENV=qaApi npm run test:api
+ENV=qaApi REQRES_API_KEY=your_reqres_key npm run test:api
 ```
 
 7. For recording test scripts :

@@ -4,7 +4,7 @@ import { test } from '@playwright/test';
 const apiActions = new APIActions();
 
 test(`getUsers`, { tag: '@API'}, async ({ request }) => {
-    const response = await request.get(`/api/users?per_page=1`);
+    const response = await request.get(`/api/users?per_page=1`, { headers: apiActions.getReqResHeaders() });
     await apiActions.verifyStatusCode(response);
 
     //* Body Response Params and Body Response Headers are stored in single text file separated by #

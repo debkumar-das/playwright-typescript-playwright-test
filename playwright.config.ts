@@ -4,16 +4,26 @@ import { OrtoniReportConfig } from 'ortoni-report';
 
 const ENV = process.env.ENV || process.env.npm_config_ENV; // Support both modern and legacy patterns
 const isCI = !!process.env.CI; // Detect if running in CI environment
+const validEnvironments = [`qa`, `dev`, `qaApi`, `devApi`] as const;
+type TestEnvironment = typeof validEnvironments[number];
 
-if (!ENV || ![`qa`, `dev`, `qaApi`, `devApi`].includes(ENV)) {
+if (!ENV || !validEnvironments.includes(ENV as TestEnvironment)) {
   console.log(`Please provide a correct environment value after command like "--ENV=qa|dev|qaApi|devApi"`);
   process.exit();
 }
 
+const currentEnvironment = ENV as TestEnvironment;
+const ignoreHTTPSErrorsByEnvironment: Record<TestEnvironment, boolean> = {
+  qa: false,
+  dev: true,
+  qaApi: true,
+  devApi: true,
+};
+const ignoreHTTPSErrors = ignoreHTTPSErrorsByEnvironment[currentEnvironment];
+
 const reportConfig: OrtoniReportConfig = {
   base64Image: true,
   title: "Playwright Framework with Typescript",
-  showProject: true,
   filename: "OrtoniHtmlReport",
   authorName: "Akshay Pai",
   folderPath: "html-report",
@@ -47,14 +57,15 @@ const config: PlaywrightTestConfig = {
         channel: `chrome`,
 
         //Picks Base Url based on User input
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
 
         //Browser Mode
-        headless: isCI ? true : false,
+        // headless: isCI ? true : false,
+        headless : false,
 
         //Browser height and width
         viewport: { width: 1500, height: 730 },
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
 
         //Enable File Downloads in Chrome
         acceptDownloads: true,
@@ -74,10 +85,10 @@ const config: PlaywrightTestConfig = {
       name: `Chromium`,
       use: {
         browserName: `chromium`,
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
         headless: true,
         viewport: { width: 1500, height: 730 },
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
         acceptDownloads: true,
         screenshot: `only-on-failure`,
         video: `retain-on-failure`,
@@ -92,10 +103,10 @@ const config: PlaywrightTestConfig = {
       name: `Firefox`,
       use: {
         browserName: `firefox`,
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
         headless: true,
         viewport: { width: 1500, height: 730 },
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
         acceptDownloads: true,
         screenshot: `only-on-failure`,
         video: `retain-on-failure`,
@@ -111,10 +122,10 @@ const config: PlaywrightTestConfig = {
       use: {
         browserName: `chromium`,
         channel: `msedge`,
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
         headless: false,
         viewport: { width: 1500, height: 730 },
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
         acceptDownloads: true,
         screenshot: `only-on-failure`,
         video: `retain-on-failure`,
@@ -128,10 +139,10 @@ const config: PlaywrightTestConfig = {
       name: `WebKit`,
       use: {
         browserName: `webkit`,
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
         headless: true,
         viewport: { width: 1500, height: 730 },
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
         acceptDownloads: true,
         screenshot: `only-on-failure`,
         video: `retain-on-failure`,
@@ -147,9 +158,9 @@ const config: PlaywrightTestConfig = {
         ...devices[`Pixel 4a (5G)`],
         browserName: `chromium`,
         channel: `chrome`,
-        baseURL: testConfig[ENV],
+        baseURL: testConfig[currentEnvironment],
         headless: true,
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors,
         acceptDownloads: true,
         screenshot: `only-on-failure`,
         video: `retain-on-failure`,
@@ -165,7 +176,7 @@ const config: PlaywrightTestConfig = {
     {
       name: `API`,
       use: {
-        baseURL: testConfig[ENV]
+        baseURL: testConfig[currentEnvironment]
       }
     }
   ],
