@@ -1,4 +1,4 @@
-import { expect, Locator, Page, BrowserContext } from '@playwright/test';
+import { Locator, Page, BrowserContext } from '@playwright/test';
 
 export class WidgetsPage {
     readonly page: Page;
@@ -26,13 +26,8 @@ export class WidgetsPage {
         await this.BLUE_COLOUR_TEXT.click();
     }
 
-    async verifyBlueColourSelected(): Promise<void> {
-        await expect(this.BLUE_COLOUR_TEXT).toBeVisible();
-    }
-
-    async verifyButtonTooltip(hoverText: string): Promise<void> {
+    async hoverButtonForTooltip(): Promise<void> {
         await this.HOVER_BUTTON.hover();  //Hover over element
-        await expect(this.TOOL_TIP_TEXT).toContainText(hoverText); // Verify Tooltip
     }
 
     async oldStyleSelectColour(colourName: string): Promise<void> {

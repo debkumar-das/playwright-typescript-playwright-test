@@ -1,4 +1,4 @@
-import { expect, Locator, Page, BrowserContext } from '@playwright/test';
+import { Locator, Page, BrowserContext } from '@playwright/test';
 import path from 'path';
 
 export class ElementsPage {
@@ -31,7 +31,7 @@ export class ElementsPage {
         this.FULL_NAME_EDITBOX = page.getByPlaceholder(`Full Name`);
         this.SUBMIT_BUTTON = page.getByText(`Submit`);
         this.SUBMITTED_TEXT = page.getByText(`Name:AutoTest`, { exact: true }); // Matches exact text
-        this.HOME_CHECK_BOX = page.getByText('Home');
+        this.HOME_CHECK_BOX = page.getByRole('checkbox', { name: 'Select Home' });
         this.HOME_SELECTED_TEXT = page.locator(`#result`);
         this.NO_RADIO_BUTTON = page.locator(`#noRadio`); // Using CSS Selector
         this.WEB_TABLES_HEADER = page.getByRole('columnheader');
@@ -56,33 +56,17 @@ export class ElementsPage {
         await this.SUBMIT_BUTTON.click();
     }
 
-    async verifySubmittedText(): Promise<void> {
-        await expect(this.SUBMITTED_TEXT).toBeVisible(); // Verifies if the text is visble on webpage
-    }
-
     async clickHomeCheckBox(): Promise<void> {
         await this.HOME_CHECK_BOX.check();
     }
 
-    async verifyHomeCheckboxSelectedText(): Promise<void> {
-        await expect(this.HOME_SELECTED_TEXT).toContainText('home'); // Verifies if the locator contains text
-    }
-
-    async verifyNoRadioButtonDisabled(): Promise<void> {
-        expect(this.NO_RADIO_BUTTON).toBeDisabled()
-    }
-
-    async verifyFirstColumnTableHeader(header: String): Promise<void> {
+    async getFirstColumnTableHeader(): Promise<string> {
         const headerText = await this.WEB_TABLES_HEADER.allTextContents(); // Get all Text from WebTable Header
-        expect(headerText[0] == header).toBeTruthy(); // Verify the First Column Header here we are comparing string values
+        return headerText[0];
     }
 
     async editCierraEntry(): Promise<void> {
         await this.WEB_TABLES_EDIT_ICON.click();
-    }
-
-    async verifyRegistrationForm(): Promise<void> {
-        await expect(this.REGISTRATION_FORM_HEADER).toBeVisible();
     }
 
     async registrationFormClose(): Promise<void> {
@@ -93,29 +77,20 @@ export class ElementsPage {
         await this.DOUBLE_CLICK_BUTTON.dblclick();
     }
 
-    async verifyDoubleClickText(): Promise<void> {
-        await expect(this.DOUBLE_CLICK_TEXT).toBeVisible();
-    }
-
     async rightClickButton(): Promise<void> {
         await this.RIGHT_CLICK_BUTTON.click({ button: 'right' }); // Right Click on button
     }
 
-    async verifyRightClickText(): Promise<void> {
-        await expect(this.RIGHT_CLICK_TEXT).toBeVisible();
-    }
-
-    async verifyNewBrowserTab(newPageURLExpected): Promise<void> {
+    async openHomeLinkInNewTab(): Promise<Page> {
         // Start waiting for new page before clicking.
         const pagePromise = this.context.waitForEvent('page');
         await this.HOME_LINK.click();
         const newPage = await pagePromise;
         await newPage.waitForLoadState();
-        const newPageURLActual = newPage.url();
-        expect(newPageURLActual == newPageURLExpected).toBeTruthy();
+        return newPage;
     }
 
-    async verifyFileDownload(): Promise<void> {
+    async downloadFile(): Promise<void> {
         // Start waiting for download before clicking. Note no await.
         const downloadPromise = this.page.waitForEvent('download');
         await this.DOWNLOAD_BUTTON.click();
@@ -125,10 +100,9 @@ export class ElementsPage {
         await download.saveAs(path.join(__dirname, `../../Downloads`, download.suggestedFilename()));
     }
 
-    async verifyFileUpload(): Promise<void> {
+    async uploadFile(): Promise<void> {
         // Select one file
         const uploadFilePath = path.join(__dirname, `../../utils/functional/sampleFile.jpeg`);
         await this.UPLOAD_BUTTON.setInputFiles(uploadFilePath);
-        await expect(this.UPLOADED_FILE_TEXT).toBeVisible();
     }
 }

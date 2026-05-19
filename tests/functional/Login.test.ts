@@ -1,4 +1,5 @@
 import test from '@lib/BaseTest';
+import { expect } from '@playwright/test';
 
 // We can use Steps like in Cucmber format as shown below
 
@@ -16,6 +17,6 @@ test(`Verify Book Store Login`, { tag: '@Smoke'}, async ({ loginPage, webActions
         await loginPage.loginToApplication();
     });
     await test.step(`Verify User is logged in and navigated to Profile page`, async () => {
-        await loginPage.verifyProfilePage();
+        await expect(loginPage.BOOKS_SEARCH_BOX).toBeVisible();
     });
 }); 

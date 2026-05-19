@@ -1,23 +1,23 @@
-import { expect, Locator, Page, BrowserContext } from '@playwright/test';
+import { Locator, Page, BrowserContext } from '@playwright/test';
 
 export class InteractionsPage {
     readonly page: Page;
     readonly context: BrowserContext;
     readonly DRAGGABLE: Locator;
-    readonly DROPPABLE: Locator
+    readonly DROPPABLE: Locator;
+    readonly DROPPABLE_READY: Locator;
 
     constructor(page: Page, context: BrowserContext) {
         this.page = page;
         this.context = context;
-        this.DRAGGABLE = page.getByRole('tabpanel', { name: 'Simple' }).locator('#draggable');
-        this.DROPPABLE = page.getByRole('tabpanel', { name: 'Simple' }).locator('#droppable');
+        const simpleTab = page.getByRole('tabpanel', { name: 'Simple' });
+        this.DRAGGABLE = simpleTab.locator('#draggable');
+        this.DROPPABLE = simpleTab.locator('#droppable');
+        this.DROPPABLE_READY = simpleTab.locator('#droppable.ui-droppable');
     }
 
-    async verifyDragandDrop(): Promise<void> {
-        await this.DRAGGABLE.hover();
-        await this.page.mouse.down();
-        await this.DROPPABLE.hover();
-        await this.page.mouse.up();
-        await expect(this.DROPPABLE).toContainText('Dropped'); //Verify Dropped text
+    async dragAndDrop(): Promise<void> {
+        await this.DROPPABLE_READY.waitFor();
+        await this.DRAGGABLE.dragTo(this.DROPPABLE);
     }
 }

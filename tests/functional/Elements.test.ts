@@ -1,4 +1,5 @@
 import test from '@lib/BaseTest';
+import { expect } from '@playwright/test';
 
 test(`Verify Elements Page`, { tag: '@Smoke'}, async ({ loginPage, elementsPage, webActions }) => {
     await loginPage.navigateToURL();
@@ -6,25 +7,28 @@ test(`Verify Elements Page`, { tag: '@Smoke'}, async ({ loginPage, elementsPage,
     await webActions.clickByText('Text Box'); //Click on TextBox Navigation Sidebar identified via text selector
     await elementsPage.enterFullName(`AutoTest`);
     await elementsPage.clickSubmit();
-    await elementsPage.verifySubmittedText();
+    await expect(elementsPage.SUBMITTED_TEXT).toBeVisible();
     await webActions.clickByText('Check Box');
     await elementsPage.clickHomeCheckBox();
-    await elementsPage.verifyHomeCheckboxSelectedText();
+    await expect(elementsPage.HOME_SELECTED_TEXT).toContainText(`home`);
     await webActions.clickByText('Radio Button');
-    await elementsPage.verifyNoRadioButtonDisabled();
+    await expect(elementsPage.NO_RADIO_BUTTON).toBeDisabled();
     await webActions.clickByText('Web Tables');
-    await elementsPage.verifyFirstColumnTableHeader('First Name');
+    expect(await elementsPage.getFirstColumnTableHeader()).toBe(`First Name`);
     await elementsPage.editCierraEntry();
-    await elementsPage.verifyRegistrationForm();
+    await expect(elementsPage.REGISTRATION_FORM_HEADER).toBeVisible();
     await elementsPage.registrationFormClose();
     await webActions.clickByText('Buttons');
     await elementsPage.doubleClickButton();
-    await elementsPage.verifyDoubleClickText();
+    await expect(elementsPage.DOUBLE_CLICK_TEXT).toBeVisible();
     await elementsPage.rightClickButton();
-    await elementsPage.verifyRightClickText();
+    await expect(elementsPage.RIGHT_CLICK_TEXT).toBeVisible();
     await webActions.clickByText('Upload and Download');
-    await elementsPage.verifyFileDownload();
-    await elementsPage.verifyFileUpload();
+    await elementsPage.downloadFile();
+    await elementsPage.uploadFile();
+    await expect(elementsPage.UPLOADED_FILE_TEXT).toBeVisible();
     await webActions.clickByText('Links');
-    await elementsPage.verifyNewBrowserTab("https://demoqa.com/");
+    const homePage = await elementsPage.openHomeLinkInNewTab();
+    expect(homePage.url()).toBe(`https://demoqa.com/`);
+    await homePage.close();
 });

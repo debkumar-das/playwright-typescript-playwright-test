@@ -1,4 +1,4 @@
-import { expect, Locator, Page, BrowserContext } from '@playwright/test';
+import { Locator, Page, BrowserContext } from '@playwright/test';
 
 export class AlertsFrameWindowsPage {
     readonly page: Page;
@@ -22,46 +22,26 @@ export class AlertsFrameWindowsPage {
         this.NESTED_CHILDFRAME_LOCATOR = page.frameLocator('#frame1').frameLocator('iframe').getByText('Child Iframe');
     }
 
-    async verifyNewTab(newTabUrlExpect): Promise<void> {
+    async openNewTab(): Promise<Page> {
         // Start waiting for new page before clicking.
         const pagePromise = this.context.waitForEvent('page');
         await this.NEW_TAB_BUTTON.click();
         const newTab = await pagePromise;
         await newTab.waitForLoadState();
-        const newTabUrlActual = newTab.url();
-        //Verify New Tab URL
-        expect(newTabUrlActual == newTabUrlExpect).toBeTruthy();
-        //Verify Text displayed in New tab
-        await expect(newTab.locator('#sampleHeading')).toContainText('This is a sample page');
-        //Close New tab
-        await newTab.close();
+        return newTab;
     }
 
-    async verifyNewWindow(newWindowUrlExpect): Promise<void> {
+    async openNewWindow(): Promise<Page> {
         const pagePromise = this.context.waitForEvent('page');
         await this.NEW_WINDOW_BUTTON.click();
         const newWindow = await pagePromise;
         await newWindow.waitForLoadState();
-        const newWindowUrlActual = newWindow.url();
-        //Verify New Tab URL
-        expect(newWindowUrlActual == newWindowUrlExpect).toBeTruthy();
-        //Close New Window
-        await newWindow.close();
+        return newWindow;
     }
 
     async enterTextAndAccept(text: string): Promise<void> {
         //We have to accept the dialog before we perform action
         this.page.on('dialog', dialog => dialog.accept(text));
         await this.PROMPT_ALERT_BUTTON.click();
-        expect(this.PROMPT_RESULT).toContainText(`You entered ${text}`); // Verify User has clicked on Cancel button
-    }
-
-    async verifyFrameText(expectedFrameText: string): Promise<void> {
-        const actualFrameText = await this.FRAME_LOCATOR.textContent();
-        expect(expectedFrameText == actualFrameText).toBeTruthy();
-    }
-
-    async verifyNestedFrameChildText() {
-        expect(this.NESTED_CHILDFRAME_LOCATOR).toBeVisible();
     }
 }

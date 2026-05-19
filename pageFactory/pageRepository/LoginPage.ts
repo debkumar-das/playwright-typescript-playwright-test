@@ -1,4 +1,4 @@
-import { Page, BrowserContext, Locator, expect } from '@playwright/test';
+import { Page, BrowserContext, Locator } from '@playwright/test';
 import { WebActions } from "@lib/WebActions";
 import { testConfig } from '../../testConfig';
 
@@ -37,7 +37,4 @@ export class LoginPage {
         await this.LOGIN_BUTTON.click();
     }
 
-    async verifyProfilePage(): Promise<void> {
-        await expect(this.BOOKS_SEARCH_BOX).toBeVisible();
-    }
 }

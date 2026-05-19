@@ -1,4 +1,5 @@
 import test from '@lib/BaseTest';
+import { expect } from '@playwright/test';
 
 test(`Generate and verify HAR file for Login Page.`, async ({ page, loginPage, webActions }) => {
     // To record HAR file use below line where "update:true"
@@ -12,5 +13,5 @@ test(`Generate and verify HAR file for Login Page.`, async ({ page, loginPage, w
     await webActions.clickByText('Book Store Application');
     await loginPage.clickOnLoginMainButton();
     await loginPage.loginToApplication();
-    await loginPage.verifyProfilePage();
+    await expect(loginPage.BOOKS_SEARCH_BOX).toBeVisible();
 });
